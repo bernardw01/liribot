@@ -45,11 +45,10 @@ function showMenu() {
                         utl.getSpotifyInfo(showMenu);
                         break;
                     case 'movie-this':
-
-                        console.log('You selected movie this');
+                        utl.getMovieInfo(showMenu);
                         break;
                     case 'do-what-it-says':
-                        console.log('You selected Do what it says');
+
                         break;
                     case 'Quit!':
                         quit = true;

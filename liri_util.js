@@ -5,14 +5,7 @@ var Spotify = require('node-spotify-api');
 var keys = require('./keys');
 var Twitter = require('twitter');
 var inq = require('inquirer');
-
-
-var client = new Twitter({
-    consumer_key: keys.twitterKeys.consumer_key,
-    consumer_secret: keys.twitterKeys.consumer_secret,
-    access_token_key: keys.twitterKeys.access_token_key,
-    access_token_secret: keys.twitterKeys.access_token_secret
-});
+var request = require('request');
 
 
 var spotify = new Spotify({
@@ -55,6 +48,9 @@ exports.getSpotifyInfo = function (callback) {
 };
 
 exports.getTwitterInfo = function (callback) {
+
+    var client = new Twitter(keys.twitterKeys);
+
     console.log('You selected get my tweets this song');
     inq
         .prompt([
@@ -75,11 +71,12 @@ exports.getTwitterInfo = function (callback) {
         .then(function (resp) {
                 if (resp.confirm) {
                     var params = {screen_name: resp.twitterName};
-                    client.get('statuses/user_timeline', params, function(error, tweets, response) {
+                    client.get('statuses/user_timeline', params, function (error, tweets, response) {
                         if (!error) {
                             console.log(tweets);
                         }
                         console.log('Here are your tweets ' + JSON.stringify(tweets));
+
                     });
                 }
 
@@ -90,7 +87,19 @@ exports.getTwitterInfo = function (callback) {
 };
 
 exports.getMovieInfo = function () {
-    console.log('You selected spotify this song');
+
+    var movieName = "Friday Night Lights"
+    // Then run a request to the OMDB API with the movie specified
+    var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=40e9cece";
+
+    // This line is just to help us debug against the actual URL.
+    console.log(queryUrl);
+
+    request(queryUrl, function (error, response, body) {
+        if (!error && response.statusCode === 200) {
+            console.log(JSON.parse(body).Year);
+        }
+    })
 
 };
 
